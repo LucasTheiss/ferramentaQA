@@ -4,20 +4,32 @@
 
 {% block content %}
 <div class="container">
-    <h3 class="">Seja bem vindo</h1>
+    <h1 class="">Seja bem vindo</h1>
     {% if dados != None %}
-        <div class="row">
-            <div class="col">
-                <div class="col-sm-6 mb-3 mb-sm-0">
+        <div>
+        {% for i in range(dados|length) %}
+            {% if i % 2 == 0 %}
+                </div>
+                <div class="row display">
+            {% endif %}
+                <div class="col">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <h5 class="card-title">{{dados[i]['nome']}}</h5>
+                            <p class="card-text">{{dados[i]['descricao']}}.</p>
+                            <div class="row" style="justify-content: space-between; padding: 0 15px;">
+                                <figcaption class="blockquote-footer">
+                                    {{dados[i]['categoria']}}
+                                </figcaption>
+                                <div class="">
+                                    <button onclick="window.location.href = '/verificar?id{{ dados[i].id }}'" class="btn btn-success">Verificar</button>
+                                    <button onclick="window.location.href = '/editar?id={{ dados[i].id }}'" class="btn btn-primary editar">Editar</button>     
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+        {% endfor %}
     {% endif %}
     <div class="col-sm-6 mb-3 mb-sm-0">
         <div class="card">

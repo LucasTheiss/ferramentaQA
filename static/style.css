@@ -34,6 +34,10 @@ main{
   margin-top: 120px;
 }
 
+.display{
+  margin-bottom: 20px;
+}
+
 a {
   color: #000;
 }
@@ -46,7 +50,7 @@ a {
   width: 33px;
 }
 
-h3, h4 {
+h3, h4, h1 {
   margin-bottom: 20px;
 }
 
@@ -204,6 +208,20 @@ h3{
   height: fit-content;
   background-color: #fff;
   margin-bottom: 20px;
+}
+
+.card{
+  min-width: 300px;
+  height: 180px;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: none  ;
+}
+
+.card-body{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between ;
 }
 
 .checklist-itens{
