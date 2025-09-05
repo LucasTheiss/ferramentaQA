@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@300..700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Quicksand:wght@300..700&family=Space+Grotesk:wght@300..700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Quicksand:wght@300..700&family=Space+Grotesk:wght@300..700&display=swap');
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #f5f8fa;
+  margin: 0;
+}
+
+hr{
+  border-bottom: 1px solid #bbb;
+  width: 90%;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 0.91rem;
+  color: #333;
+}
+
+.container{
+  margin: 0 auto;
+}
+
+.cont{
+  width: 90%;
+  margin: 0 auto;
+}
+
+main{
+  margin-top: 120px;
+}
+
+a {
+  color: #000;
+}
+
+.logo, h3{
+  /* font-family: "Quicksand", sans-serif; */
+}
+
+.logo img{
+  width: 33px;
+}
+
+h3, h4 {
+  margin-bottom: 20px;
+}
+
+h3{
+  font-weight: 600;
+}
+
+/* header */
+
+.header {
+  background-color: #fff;
+  box-shadow: 1px 1px 4px 0 rgba(0,0,0,.1);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+}
+
+.header ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.header li a {
+  display: block;
+  padding: 20px 20px;
+  border-right: 1px solid #f4f4f4;
+  text-decoration: none;
+  transition: 0.5s;
+}
+
+.header li a:hover,
+.header .menu-btn:hover {
+  background-color: #f4f4f4;
+}
+
+.header .logo {
+  display: block;
+  float: left;
+  font-size: 2em;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-weight: 300;
+  transition: 0.5s;
+}
+
+/* menu */
+
+.header .menu {
+  clear: both;
+  max-height: 0;
+  transition: max-height .2s ease-out;
+}
+
+/* menu icon */
+
+.header .menu-icon {
+  cursor: pointer;
+  display: inline-block;
+  float: right;
+  padding: 28px 20px;
+  position: relative;
+  user-select: none;
+}
+
+.header .menu-icon .navicon {
+  background: #333;
+  display: block;
+  height: 2px;
+  position: relative;
+  transition: background .2s ease-out;
+  width: 18px;
+}
+
+.header .menu-icon .navicon:before,
+.header .menu-icon .navicon:after {
+  background: #333;
+  content: '';
+  display: block;
+  height: 100%;
+  position: absolute;
+  transition: all .2s ease-out;
+  width: 100%;
+}
+
+.header .menu-icon .navicon:before {
+  top: 5px;
+}
+
+.header .menu-icon .navicon:after {
+  top: -5px;
+}
+
+/* menu btn */
+
+.header .menu-btn {
+  display: none;
+}
+
+.header .menu-btn:checked ~ .menu {
+  max-height: 240px;
+}
+
+.header .menu-btn:checked ~ .menu-icon .navicon {
+  background: transparent;
+}
+
+.header .menu-btn:checked ~ .menu-icon .navicon:before {
+  transform: rotate(-45deg);
+}
+
+.header .menu-btn:checked ~ .menu-icon .navicon:after {
+  transform: rotate(45deg);
+}
+
+.header .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:before,
+.header .menu-btn:checked ~ .menu-icon:not(.steps) .navicon:after {
+  top: 0;
+}
+
+@media (min-width: 768px) {
+  .header li {
+    float: left;
+  }
+  .header li a {
+    padding: 20px 30px;
+  }
+  .header .menu {
+    clear: none;
+    float: right;
+    max-height: none;
+  }
+  .header .menu-icon {
+    display: none;
+  }
+}
+
+/* checklist */
+
+.title{
+  margin-bottom: 30px;
+}
+
+.main-section{
+  gap: 30px;
+}
+
+.section{
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  border-radius: 10px;
+  height: fit-content;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.checklist-itens{
+  .col, .col-10{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 45px;
+    border: #bbb 1px solid;
+  }
+}
+
+.checklist-item{
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  height: fit-content;
+
+  & .col, .col-10{
+    border-bottom: none;
+  }
+
+  & .col {
+    border-left: none;
+  }
+}
+
+.checklist-header{
+  color: #777;
+  margin: 0 auto;
+  border: #bbb 1px solid;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom: none;
+
+  & .col, .col-10{
+    justify-content: start;
+    border: none;
+  }
+
+  & .col-10{
+    border-right: #bbb 1px solid;
+  }
+}
+
+.checklist-adicionar{
+  margin: 0 auto;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: #bbb 1px solid;
+  
+  & .col, .col-10{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 45px;
+    border: none;
+  }
+  
+  & .col-10{
+    border-right: #bbb 1px solid;
+  }
+}
+
+.checklist-input{
+  padding: 0 10px;
+  border: #bbb 1px solid;
+  height: 75%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.section-informacoes{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.label{
+  font-weight: 600;
+}
+
+.informacoes{
+  height: 35px;
+}
+
+textarea{
+  height: 80px !important;
+}
+
+.envio{
+  margin-top: 20px;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  gap: 7px;
+
+  & .btn{
+    font-size: 1.1rem;
+    width: 30%;
+  }
+
+}
+.btn-cancelar{
+  background-color: rgba(0,0,0,0);
+  border: #aaa 1px solid;
+  border-radius: 5px;
+  width: 25%;
+}
+
+.btn-cancelar:hover{
+  color: #777;
+}
+
+.checklist-input:focus{
+  outline: none;
+}
+
+svg{
+  transition: 0.5s;
+}
+
+.salvar:hover {
+  stroke: lightblue;
+  cursor: pointer;
+}
+
+.excluir:hover {
+  stroke: lightcoral;
+  cursor: pointer;
+}
