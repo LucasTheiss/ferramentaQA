@@ -4,42 +4,48 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="">Seja bem vindo</h1>
-    {% if dados != None %}
+    <header class="page-header">
         <div>
-        {% for i in range(dados|length) %}
-            {% if i % 2 == 0 %}
-                </div>
-                <div class="row display">
-            {% endif %}
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">{{dados[i]['nome']}}</h5>
-                            <p class="card-text">{{dados[i]['descricao']}}.</p>
-                            <div class="row" style="justify-content: space-between; padding: 0 15px;">
-                                <figcaption class="blockquote-footer">
-                                    {{dados[i]['categoria']}}
-                                </figcaption>
-                                <div class="">
-                                    <button onclick="window.location.href = '/verificar?id{{ dados[i].id }}'" class="btn btn-success">Verificar</button>
-                                    <button onclick="window.location.href = '/editar?id={{ dados[i].id }}'" class="btn btn-primary editar">Editar</button>     
-                                </div>
-                            </div>
+            <h1>Seus Checklists</h1>
+            <p>Gerencie, edite ou verifique seus checklists existentes.</p>
+        </div>
+        <a href="/criar" class="button button-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+            Criar Novo Checklist
+        </a>
+    </header>
+
+    <main>
+        {% if dados %}
+            <div class="checklist-grid">
+                {% for checklist in dados %}
+                <div class="card checklist-card">
+                    <div class="card-content">
+                        <div class="card-header-flex">
+                            <h3>{{ checklist.nome }}</h3>
+                            <span class="category-badge">{{ checklist.categoria or 'Sem Categoria' }}</span>
+                        </div>
+                        <p class="card-description">
+                            {{ checklist.descricao or 'Este checklist não possui uma descrição.' }}
+                        </p>
+                        <div class="card-stats">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <span>{{ checklist.total_itens }} {{ 'item' if checklist.total_itens == 1 else 'itens' }}</span>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <a href="/verificar?id={{ checklist.id }}" class="button button-secondary">Verificar</a>
+                        <a href="/editar?id={{ checklist.id }}" class="button button-primary">Editar</a>
+                    </div>
                 </div>
-        {% endfor %}
-    {% endif %}
-    <div class="col-sm-6 mb-3 mb-sm-0">
-        <div class="card">
-            <div class="card-body">
-            <figcaption class="blockquote-footer">
-                Crie um novo checklist
-            </figcaption>
-            <a href="/criar" class="btn btn-primary">+</a>
+                {% endfor %}
             </div>
-        </div>
-    </div>
+        {% else %}
+            <div class="empty-state" style="margin-top: 2rem;">
+                <h2>Nenhum checklist encontrado.</h2>
+                <p>Clique em "Criar Novo Checklist" para começar.</p>
+            </div>
+        {% endif %}
+    </main>
 </div>
 {% endblock %}
