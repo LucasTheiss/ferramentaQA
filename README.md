@@ -2,7 +2,7 @@
 Trabalho para implementação de uma ferramente para gerencimaneto de checklists focado em Quality Assurance para matéria de Qualidade de Software.
 
 ## Como rodar
-É necessária a instalação de todas as dependências especificadas no arquivo `app.py`, após isso, configurar `.env` na raiz do projeto com as variáveis ocultas relacionadas ao e-mail, executar `data/db_create.py` para criação do banco de dados, executar `app.py` para iniciação do arquivo Flask
+É necessária a instalação de todas as dependências especificadas no arquivo `app.py`, após isso, configurar `.env` na raiz do projeto com as variáveis ocultas relacionadas ao e-mail, executar `data/db_create.py` para criação do banco de dados, executar `app.py` para inicialização do arquivo Flask
 e por fim, acessar o `https://127.0.0.1:5000`.
 
 ## Módulos
@@ -19,7 +19,7 @@ Arquivo principal na execução do site:
 ### Banco de dados 
 Framework: SQLite \
 \
-Principais tabelas
+O banco de dados é criado de forma local e não compartilhada, sendo única para cada usuário, principais tabelas:
 - checklist: Armazena as informações gerais de cada checklist (nome, descrição, categoria).
 - nivel: Guarda os níveis de gravidade personalizados (Crítico, Alto, etc.) e seus prazos, associados a um checklist.
 - item: Contém as perguntas/critérios de cada checklist.
