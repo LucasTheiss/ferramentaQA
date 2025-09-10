@@ -2,7 +2,7 @@
 Trabalho para implementação de uma ferramente para gerencimaneto de checklists focado em Quality Assurance para matéria de Qualidade de Software.
 
 ## Como rodar
-É necessária a instalação de todas as dependências especificadas no arquivo `app.py`, após isso, configurar `.env` com as variáveis ocultas relacionadas ao e-mail, executar `data/db_create.py` para criação do banco de dados, executar `app.py` para iniciação do arquivo Flask
+É necessária a instalação de todas as dependências especificadas no arquivo `app.py`, após isso, configurar `.env` na raiz do projeto com as variáveis ocultas relacionadas ao e-mail, executar `data/db_create.py` para criação do banco de dados, executar `app.py` para iniciação do arquivo Flask
 e por fim, acessar o `https://127.0.0.1:5000`.
 
 ## Módulos
