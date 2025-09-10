@@ -1,253 +1,174 @@
-let totalItens = 0
-let indexTotal = 0
-let listaElementos = []
-let niveis = []
-let indexNivel = 0
+document.addEventListener('DOMContentLoaded', () => {
+    let items = []; // perguntas
+    let severityLevels = []; //niveis 
 
-function salvarItem(tipo) {
-    if (tipo === 'pergunta') {
-        const input = document.getElementById('checklist-input-save')
-        const texto = input.value.trim()
-        
-        if (texto === '') return
-        
-        const item = {
-            id: indexTotal,
-            texto: texto
-        }
-        
-        criarElementoLista(tipo, item, indexTotal)
-        listaElementos.push(item)
-        indexTotal++
-        totalItens++
-        document.querySelector('#numero').innerHTML = totalItens
+    const addItemButton = document.getElementById('add-item-button');
+    const itemsContainer = document.getElementById('items-container');
+    const emptyState = document.getElementById('empty-state');
 
-        input.value = ''
-        input.focus()
-    } 
-    else if (tipo === 'nivel') {
-        const inputNivel = document.getElementById('nivel-input-save')
-        const inputTempo = document.getElementById('tempo-input-save')
-        const nivel = inputNivel.value.trim()
-        const tempo = inputTempo.value.trim()
-        
-        if (nivel === '' || tempo === '') return
-        
-        const item = {
-            id: indexNivel,
-            nivel: nivel,
-            tempo: parseInt(tempo)
-        }
-        
-        criarElementoLista(tipo, item, indexNivel)
-        niveis.push(item)
-        indexNivel++
-        
-        inputNivel.value = ''
-        inputTempo.value = ''
-        inputNivel.focus()
+    const addSeverityButton = document.getElementById('add-severity-button');
+    const severityNameInput = document.getElementById('severity-name-input');
+    const severityTimeInput = document.getElementById('severity-time-input');
+    const severityContainer = document.getElementById('severity-levels-container');
+
+    const backButton = document.getElementById('back-button');
+    const saveChecklistButton = document.getElementById('save-checklist-button');
+
+    // event listeners
+    addItemButton.addEventListener('click', addItem);
+    itemsContainer.addEventListener('change', handleItemUpdate);
+    itemsContainer.addEventListener('click', handleItemClick);
+
+    addSeverityButton.addEventListener('click', addSeverityLevel);
+    severityContainer.addEventListener('click', handleSeverityClick);
+
+    backButton.addEventListener('click', handleBackButton);
+    saveChecklistButton.addEventListener('click', submitChecklist);
+
+
+    function addItem() {
+        items.push({ id: Date.now().toString(), question: '' });
+        renderItems();
     }
-}
-
-function criarElementoLista(tipo, item, id) {
-    const novaLinha = document.createElement('div')
-    novaLinha.className = tipo === 'pergunta' ? 'checklist-item row' : 'nivel-item row'
     
-    if (tipo === 'pergunta') {
-        const linhaDeAdicionar = document.querySelector('.checklist-adicionar')
-        const container = document.querySelector('.checklist-itens')
-        
-        novaLinha.innerHTML = `
-            <div class="col-10 checklist-item">
-                <input class="checklist-input" value="${item.texto}" id="${id}" data-tipo="pergunta">
-            </div>
-            <div class="col">
-                <div class="salvar" onclick="atualizarItem('pergunta', this)">
-                    <svg class="salvar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg>
-                </div>
-                <button class="btn btn-link text-danger p-0" onclick="excluirItem('pergunta', this)">
-                    <svg class="excluir" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                    </svg>
-                </button>
-            </div>
-        `
-        container.insertBefore(novaLinha, linhaDeAdicionar)
-    } 
-    else if (tipo === 'nivel') {
-        const linhaDeAdicionar = document.querySelector('.nivel-adicionar')
-        const container = document.querySelector('.niveis-itens')
-        
-        novaLinha.innerHTML = `
-            <div class="col-6 checklist-item">
-                <input class="checklist-input" value="${item.nivel}" id="nivel-${id}" data-tipo="nivel">
-            </div>
-            <div class="col-4 checklist-item">
-                <input type="number" class="checklist-input" value="${item.tempo}" id="tempo-${id}" min="1">
-            </div>
-            <div class="col">
-                <div class="salvar" onclick="atualizarItem('nivel', this)">
-                    <svg class="salvar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg>
-                </div>
-                <button class="btn btn-link text-danger p-0" onclick="excluirItem('nivel', this)">
-                    <svg class="excluir" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18"></path>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                    </svg>
-                </button>
-            </div>
-        `
-        container.insertBefore(novaLinha, linhaDeAdicionar)
+    function removeItem(id) {
+        items = items.filter(item => item.id !== id);
+        renderItems();
     }
-}
 
-function excluirItem(tipo, botao) {
-    const linha = botao.parentElement.parentElement
-    
-    if (tipo === 'pergunta') {
-        const input = linha.querySelector('.checklist-input')
-        const id = Number(input.id)
-        
-        let i = 0
-        for (; i < listaElementos.length && listaElementos[i].id != id; i++){}
-        
-        if (i < listaElementos.length) {
-            listaElementos.splice(i, 1)
-        }
-        
-        totalItens--
-        document.querySelector('#numero').innerHTML = totalItens
-    } 
-    else if (tipo === 'nivel') {
-        const inputNivel = linha.querySelector('input[id^="nivel-"]')
-        const id = Number(inputNivel.id.replace('nivel-', ''))
-        
-        let i = 0
-        for (; i < niveis.length && niveis[i].id != id; i++){}
-        
-        if (i < niveis.length) {
-            niveis.splice(i, 1)
+    function updateItem(id, field, value) {
+        const itemIndex = items.findIndex(item => item.id === id);
+        if (itemIndex > -1) items[itemIndex][field] = value;
+    }
+
+    function handleItemUpdate(e) {
+        const target = e.target.closest('.item-input');
+        if (target) updateItem(target.closest('.item-card').dataset.id, target.dataset.field, target.value);
+    }
+
+    function handleItemClick(e) {
+        const deleteButton = e.target.closest('.delete-item-button');
+        if (deleteButton) removeItem(deleteButton.closest('.item-card').dataset.id);
+    }
+
+    function addSeverityLevel() {
+        const name = severityNameInput.value.trim();
+        const time = parseInt(severityTimeInput.value, 10);
+
+        if (name && time > 0) {
+            severityLevels.push({ id: Date.now().toString(), name, time });
+            severityNameInput.value = '';
+            severityTimeInput.value = '';
+            severityNameInput.focus();
+            renderSeverityLevels();
         }
     }
-    
-    linha.remove()
-}
 
-function atualizarItem(tipo, botao) {
-    const linha = botao.parentElement.parentElement
-    
-    if (tipo === 'pergunta') {
-        const input = linha.querySelector('.checklist-input')
-        const id = Number(input.id)
-        const novoTexto = input.value
-        
-        let i = 0
-        for(; i < listaElementos.length && listaElementos[i].id != id; i++){}
-        
-        if(i < listaElementos.length) {
-            listaElementos[i].texto = novoTexto
-        }
-    } 
-    else if (tipo === 'nivel') {
-        const inputNivel = linha.querySelector('input[id^="nivel-"]')
-        const inputTempo = linha.querySelector('input[id^="tempo-"]')
-        const id = Number(inputNivel.id.replace('nivel-', ''))
-        const novoNivel = inputNivel.value
-        const novoTempo = parseInt(inputTempo.value)
-        
-        let i = 0
-        for(; i < niveis.length && niveis[i].id != id; i++){}
-        
-        if(i < niveis.length) {
-            niveis[i].nivel = novoNivel
-            niveis[i].tempo = novoTempo
-        }
+    function removeSeverityLevel(id) {
+        severityLevels = severityLevels.filter(level => level.id !== id);
+        renderSeverityLevels();
     }
-}
 
-function voltar() {
-    Swal.fire({
-        title: "Tem certeza que deseja continuar?",
-        text: "Seu progresso não salvo será perdido!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Cancelar",
-        cancelButtonText: "Continuar"
-    }).then((result) => {
-        if (!result.isConfirmed) {
-            window.location.href = '/'
-        }
-    })
-}
-
-function enviarFormulario() {
-    const nome = document.getElementById('nome').value.trim()
-    const descricao = document.getElementById('descricao').value.trim()
-    const categoria = document.getElementById('categoria').value.trim()
-    
-    if (nome === '') {
-        Swal.fire('Erro', 'O nome do checklist é obrigatório', 'error')
-        return
+    function handleSeverityClick(e) {
+        const deleteButton = e.target.closest('.delete-severity-button');
+        if (deleteButton) removeSeverityLevel(deleteButton.closest('.list-item').dataset.id);
     }
     
-    if (listaElementos.length === 0) {
-        Swal.fire('Erro', 'Adicione pelo menos uma pergunta ao checklist', 'error')
-        return
-    }
-    
-    if (niveis.length === 0) {
-        Swal.fire('Erro', 'Adicione pelo menos um nível de gravidade', 'error')
-        return
-    }
-    
-    const dados = {
-        nome: nome,
-        descricao: descricao,
-        categoria: categoria,
-        perguntas: listaElementos.map(item => item.texto),
-        niveis: niveis.map(item => ({
-            nivel: item.nivel,
-            tempo: item.tempo
-        }))
-    }
-    
-    fetch('/criar', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dados)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.bool) {
-            Swal.fire({
-                title: 'Sucesso!',
-                text: data.message,
-                icon: 'success'
-            }).then(() => {
-                window.location.href = '/'
-            })
+    function renderItems() {
+        itemsContainer.innerHTML = '';
+        if (items.length === 0) {
+            itemsContainer.appendChild(emptyState);
+            emptyState.style.display = 'block';
         } else {
-            Swal.fire('Erro', data.message || 'Erro ao criar checklist', 'error')
+            emptyState.style.display = 'none';
+            items.forEach((item, index) => itemsContainer.appendChild(createItemElement(item, index)));
         }
-    })
-    .catch(error => {
-        Swal.fire('Erro', 'Erro ao comunicar com o servidor' + error, 'error')
-    })
-}
+        updateSummary();
+    }
+
+    function renderSeverityLevels() {
+        severityContainer.innerHTML = '';
+        severityLevels.forEach(level => severityContainer.appendChild(createSeverityElement(level)));
+    }
+
+    function createItemElement(item, index) {
+        const div = document.createElement('div');
+        div.className = 'item-card';
+        div.dataset.id = item.id;
+        div.innerHTML = `
+            <div class="item-card-header">
+                <span class="item-title">Item ${index + 1}</span>
+                <button class="button button-danger-ghost delete-item-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+            </div>
+            <div class="form-group item-question-group">
+                <label>Pergunta/Critério</label>
+                <textarea class="textarea-field item-input" data-field="question" placeholder="Ex: O sistema exibe mensagem de erro adequada..." rows="2">${item.question}</textarea>
+            </div>`;
+        div.querySelector('textarea').value = item.question;
+        return div;
+    }
+
+    function createSeverityElement(level) {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.dataset.id = level.id;
+        div.innerHTML = `
+            <div>
+                <span>${level.name}</span>
+                <span class="time">(${level.time} ${level.time > 1 ? 'dias' : 'dia'})</span>
+            </div>
+            <button class="button button-danger-ghost delete-severity-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>`;
+        return div;
+    }
+    
+    function updateSummary() {
+        document.getElementById('summary-total-items').textContent = items.length;
+    }
+
+    function handleBackButton() {
+        Swal.fire({
+            title: "Tem certeza?", text: "Seu progresso não salvo será perdido!", icon: "warning",
+            showCancelButton: true, confirmButtonColor: "#3085d6", cancelButtonColor: "#d33",
+            confirmButtonText: "Sim, sair", cancelButtonText: "Não, ficar"
+        }).then(result => { if (result.isConfirmed) window.location.href = '/'; });
+    }
+
+    function submitChecklist() {
+        const name = document.getElementById('checklist-name').value.trim();
+        const description = document.getElementById('checklist-description').value.trim();
+        const category = document.getElementById('checklist-category').value;
+        
+        if (!name) return Swal.fire('Erro', 'O nome do checklist é obrigatório.', 'error');
+        if (items.length === 0) return Swal.fire('Erro', 'Adicione pelo menos um item ao checklist.', 'error');
+        if (severityLevels.length === 0) return Swal.fire('Erro', 'Adicione pelo menos um nível de gravidade.', 'error');
+
+        const checklistData = { name, description, category, items, severityLevels };
+        
+        console.log("Enviando dados do Checklist:", checklistData);
+
+        fetch('/criar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(checklistData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.bool) {
+                Swal.fire('Sucesso!', data.message, 'success').then(() => { window.location.href = '/'; });
+            } else {
+                Swal.fire('Erro', data.message || 'Ocorreu um erro ao salvar.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Erro no Fetch:', error);
+            Swal.fire('Erro de Conexão', 'Não foi possível comunicar com o servidor.', 'error');
+        });
+    }
+
+    renderItems();
+    renderSeverityLevels();
+});
