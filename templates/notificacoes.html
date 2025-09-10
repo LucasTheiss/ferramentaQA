@@ -8,6 +8,7 @@
         <div>
             <h1>Acompanhamento de Notificações</h1>
             <p>Gerencie as não conformidades reportadas.</p>
+            <input type="text" id="search-input" class="input-field" placeholder="Pesquisar por nome...">
         </div>
         <a href="/" class="button button-secondary">
              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
@@ -17,9 +18,9 @@
 
     <main>
         {% if notificacoes %}
-            <div class="notification-list">
+            <div class="notification-list" id="filterable-container">
                 {% for n in notificacoes %}
-                <div class="card notification-card {% if n.status == 'Resolvido' %}status-resolved{% endif %}" data-notification-id="{{ n.id }}">
+                <div class="card notification-card filterable-card {% if n.status == 'Resolvido' %}status-resolved{% endif %}" data-notification-id="{{ n.id }}" data-search-term="{{ n.checklist_nome }}">
                     <div class="card-content">
                         <div class="card-header-flex">
                             <h3 class="notification-title">{{ n.checklist_nome }}</h3>
@@ -51,6 +52,10 @@
                 </div>
                 {% endfor %}
             </div>
+            <div id="no-results-message" class="empty-state" style="display: none; margin-top: 2rem;">
+                <h2>Nenhum resultado encontrado.</h2>
+                <p>Tente ajustar os termos da sua pesquisa.</p>
+            </div>
         {% else %}
             <div class="empty-state" style="margin-top: 2rem;">
                 <h2>Nenhuma notificação encontrada.</h2>
@@ -63,4 +68,5 @@
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ url_for('static', filename='notificacoes.js') }}"></script> 
+<script src="{{ url_for('static', filename='search.js') }}"></script> 
 {% endblock %}

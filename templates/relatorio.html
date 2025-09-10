@@ -34,7 +34,7 @@
                             <span class="summary-value">{{ info.data_verificacao.strftime('%d/%m/%Y %H:%M') }}</span>
                         </div>
                         <div class="summary-item">
-                            <span>Aprovação Final:</span>
+                            <span>Porcentagem de aderência:</span>
                             {% if info.score_aprovacao >= 90 %}
                                 {% set score_class = 'badge-low' %}
                             {% elif info.score_aprovacao >= 70 %}

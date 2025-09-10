@@ -7,27 +7,31 @@
     <header class="page-header">
         <div>
             <h1>Seus Checklists</h1>
-            <p>Gerencie, edite ou verifique seus checklists existentes.</p>
+            <input type="text" id="search-input" class="input-field" placeholder="Pesquisar por nome ou categoria...">
         </div>
-        <a href="/criar" class="button button-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-            Criar Novo Checklist
-        </a>
+        <div class="header-right">
+            <a href="/historico" class="button button-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-history"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Histórico
+            </a>
+            <a href="/criar" class="button button-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Criar Novo Checklist
+            </a>
+        </div>
     </header>
 
     <main>
         {% if dados %}
-            <div class="checklist-grid">
+            <div class="checklist-grid" id="filterable-container">
                 {% for checklist in dados %}
-                <div class="card checklist-card">
+                <div class="card checklist-card filterable-card" data-search-term="{{ checklist.nome }} {{ checklist.categoria }}">
                     <div class="card-content">
                         <div class="card-header-flex">
                             <h3>{{ checklist.nome }}</h3>
                             <span class="category-badge">{{ checklist.categoria or 'Sem Categoria' }}</span>
                         </div>
-                        <p class="card-description">
-                            {{ checklist.descricao or 'Este checklist não possui uma descrição.' }}
-                        </p>
+                        <p class="card-description">{{ checklist.descricao or 'Este checklist não possui uma descrição.' }}</p>
                         <div class="card-stats">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                             <span>{{ checklist.total_itens }} {{ 'item' if checklist.total_itens == 1 else 'itens' }}</span>
@@ -40,12 +44,16 @@
                 </div>
                 {% endfor %}
             </div>
-        {% else %}
-            <div class="empty-state" style="margin-top: 2rem;">
-                <h2>Nenhum checklist encontrado.</h2>
-                <p>Clique em "Criar Novo Checklist" para começar.</p>
+            <div id="no-results-message" class="empty-state" style="display: none; margin-top: 2rem;">
+                <h2>Nenhum resultado encontrado.</h2>
+                <p>Tente ajustar os termos da sua pesquisa.</p>
             </div>
-        {% endif %}
+        {% else %}
+            {% endif %}
     </main>
 </div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='search.js') }}"></script> 
 {% endblock %}
