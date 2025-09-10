@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Notificações Pendentes{% endblock %}
+
+{% block content %}
+<div class="container">
+    <header class="page-header">
+        <div>
+            <h1>Acompanhamento de Notificações</h1>
+            <p>Gerencie as não conformidades reportadas.</p>
+        </div>
+        <a href="/" class="button button-secondary">
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Voltar para Início
+        </a>
+    </header>
+
+    <main>
+        {% if notificacoes %}
+            <div class="notification-list">
+                {% for n in notificacoes %}
+                <div class="card notification-card {% if n.status == 'Resolvido' %}status-resolved{% endif %}" data-notification-id="{{ n.id }}">
+                    <div class="card-content">
+                        <div class="card-header-flex">
+                            <h3 class="notification-title">{{ n.checklist_nome }}</h3>
+                            <span class="category-badge">{{ n.nivel_nome }}</span>
+                        </div>
+                        <p class="card-description">{{ n.question }}</p>
+                        
+                        <div class="notification-details">
+                            <div><span>Destinatário:</span> {{ n.destinatario_email }}</div>
+                            <div><span>Enviado em:</span> {{ n.data_envio.strftime('%d/%m/%Y %H:%M') }}</div>
+                            <div {% if n.data_limite < agora and n.status == 'Pendente' %}class="deadline-expired"{% endif %}>
+                                <span>Prazo:</span> {{ n.data_limite.strftime('%d/%m/%Y') }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if n.status == 'Pendente' %}
+                    <div class="card-footer notification-actions">
+                        {% if n.data_limite < agora %}
+                        <div class="alert-icon">!</div>
+                        {% endif %}
+                        <button class="button button-primary resolve-button">Resolver</button>
+                    </div>
+                    {% else %}
+                    <div class="card-footer status-resolved-footer">
+                        Resolvido
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state" style="margin-top: 2rem;">
+                <h2>Nenhuma notificação encontrada.</h2>
+            </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='script_notificacoes.js') }}"></script> 
+{% endblock %}

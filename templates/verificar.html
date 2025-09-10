@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Verificar Checklist{% endblock %}
+
+{% block content %}
+<div class="container">
+    <header class="page-header">
+        <div class="header-left">
+            <a href="/" class="button button-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                Voltar
+            </a>
+            <div>
+                <h1>Verificar Checklist</h1>
+                <p>Responda a cada um dos critérios abaixo.</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="finish-verification-button" class="button button-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Finalizar Verificação
+            </button>
+        </div>
+    </header>
+
+    <input type="hidden" id="checklist-id" value="{{ checklist.id }}">
+
+    <main class="main-grid">
+        <div class="grid-col-1">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Sumário</h2>
+                </div>
+                <div class="card-content summary-static">
+                    <h3>{{ checklist.nome }}</h3>
+                    <p>{{ checklist.descricao or "Não tem descrição." }}</p>
+                    <p>{{ checklist.categoria or "Não tem categoria." }}</p>
+                    
+                    <div class="summary-section">
+                        <div class="summary-item">
+                            <span>Total de itens:</span>
+                            <span class="summary-value">{{ items|length }}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Aprovação:</span>
+                            <span id="approval-percentage" class="summary-value">--%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-col-2">
+             <div class="card">
+                <div class="card-header">
+                    <h2>Critérios de Avaliação</h2>
+                </div>
+                <div id="questions-container" class="card-content">
+                    {% for item in items %}
+                    <div class="question-card" data-item-id="{{ item.id }}">
+                        <p class="question-text">{{ loop.index }}. {{ item.question }}</p>
+                        <div class="answer-group">
+                            <select class="select-field answer-select">
+                                <option value="" selected disabled>Selecione...</option>
+                                <option value="Sim">Sim</option>
+                                <option value="Não">Não</option>
+                                <option value="NA">Não Aplicável</option>
+                            </select>
+                            <select class="select-field severity-select" style="display: none;">
+                                <option value="" selected disabled>Selecione a gravidade...</option>
+                                {% for nivel in niveis %}
+                                <option value="{{ nivel.id }}">{{ nivel.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='checklist_verificar.js') }}"></script> 
+{% endblock %}  

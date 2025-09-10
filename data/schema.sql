@@ -1,9 +1,12 @@
--- Apaga as tabelas antigas para garantir a nova estrutura
 DROP TABLE IF EXISTS item;
-DROP TABLE IF EXISTS nivel; -- Adicionado para garantir
+DROP TABLE IF EXISTS nivel;
 DROP TABLE IF EXISTS checklist;
+DROP TABLE IF EXISTS resposta;
+DROP TABLE IF EXISTS verificacao;
+DROP TABLE IF EXISTS notificacao;
 
--- Tabela principal do Checklist
+SET TimeZone TO 'America/Sao_Paulo';
+
 CREATE TABLE checklist (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
@@ -12,7 +15,6 @@ CREATE TABLE checklist (
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de itens (perguntas) - Sem alterações
 CREATE TABLE item (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     question TEXT NOT NULL,
@@ -20,11 +22,39 @@ CREATE TABLE item (
     FOREIGN KEY (checklist_id) REFERENCES checklist (id)
 );
 
--- NOVA: Tabela para armazenar os níveis de gravidade definidos para cada checklist
 CREATE TABLE nivel (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT NOT NULL,
-    tempo INTEGER NOT NULL, -- Tempo em dias
+    tempo INTEGER NOT NULL,
     checklist_id INTEGER NOT NULL,
     FOREIGN KEY (checklist_id) REFERENCES checklist (id)
+);
+
+CREATE TABLE verificacao (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    checklist_id INTEGER NOT NULL,
+    data_verificacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    score_aprovacao REAL,
+    FOREIGN KEY (checklist_id) REFERENCES checklist (id)
+);
+
+CREATE TABLE resposta (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    verificacao_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    resposta_texto TEXT NOT NULL, 
+    nivel_id INTEGER, 
+    FOREIGN KEY (verificacao_id) REFERENCES verificacao (id),
+    FOREIGN KEY (item_id) REFERENCES item (id),
+    FOREIGN KEY (nivel_id) REFERENCES nivel (id)
+);
+
+CREATE TABLE notificacao (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    resposta_id INTEGER NOT NULL,
+    destinatario_email TEXT NOT NULL,
+    data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_limite TIMESTAMP NOT NULL,
+    status TEXT NOT NULL DEFAULT 'Pendente',
+    FOREIGN KEY (resposta_id) REFERENCES resposta (id)
 );
