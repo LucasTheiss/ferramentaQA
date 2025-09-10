@@ -1,1 +1,4 @@
 .env*
+database.db
+popular.sql
+db_popular.py
