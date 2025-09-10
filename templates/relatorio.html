@@ -69,10 +69,12 @@
                             {% if resposta.resposta_texto == 'Sim' %}
                                 <span class="answer-badge answer-sim">Sim</span>
                             {% elif resposta.resposta_texto == 'Não' %}
-                                <span class="answer-badge answer-nao">Não</span>
-                                {% if resposta.nivel_nome %}
-                                <span class="severity-tag">{{ resposta.nivel_nome }}</span>
-                                {% endif %}
+                                <span>
+                                    <span class="answer-badge answer-nao">Não</span>
+                                    {% if resposta.nivel_nome %}
+                                    <span class="severity-tag">{{ resposta.nivel_nome }}</span>
+                                    {% endif %}
+                                </span>
                                 <button class="button button-secondary notify-button" data-resposta-id="{{ resposta.id }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                                     Notificar
