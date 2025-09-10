@@ -18,12 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(res => res.json())
                     .then(data => {
                         if (data.bool) {
-                            // Atualiza a UI para refletir o novo status
                             card.classList.add('status-resolved');
                             const actionsFooter = card.querySelector('.notification-actions');
                             if (actionsFooter) {
                                 actionsFooter.innerHTML = '<div class="card-footer status-resolved-footer">Resolvido</div>';
-                                // Remove o footer antigo e adiciona um novo para manter a estrutura
                                 const newFooter = document.createElement('div');
                                 newFooter.className = 'card-footer status-resolved-footer';
                                 newFooter.textContent = 'Resolvido';

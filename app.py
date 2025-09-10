@@ -12,9 +12,10 @@ app = Flask(__name__)
 app.config.update(
     MAIL_SERVER=os.getenv("MAIL_SERVER"),
     MAIL_PORT=int(os.getenv("MAIL_PORT")),
-    MAIL_USE_SSL=os.getenv("MAIL_USE_SSL") == "True",
+    MAIL_USE_TLS=os.getenv("MAIL_USE_TLS").lower() == "true",
+    MAIL_USE_SSL=os.getenv("MAIL_USE_SSL").lower() == "true",
     MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD")
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
 )
 mail = Mail(app)
 
@@ -22,6 +23,10 @@ def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
+
+@app.template_filter('to_datetime')
+def to_datetime(value, fmt="%Y-%m-%d %H:%M:%S"):
+    return datetime.strptime(value, fmt)
 
 @app.route('/')
 def index():
@@ -237,8 +242,6 @@ def relatorio(verificacao_id):
 
     return render_template('relatorio.html', info=verificacao_dict, respostas=respostas)
 
-# Adicione estas rotas ao final do app.py
-
 @app.route('/notificar', methods=['POST'])
 def notificar():
     dados = request.get_json()
@@ -251,7 +254,6 @@ def notificar():
         return jsonify({'bool': False, 'message': 'Dados incompletos.'}), 400
 
     conn = get_db_connection()
-    # Pega o tempo em dias associado à gravidade da resposta
     resposta_info = conn.execute('''
         SELECT n.tempo 
         FROM resposta r 
@@ -263,20 +265,17 @@ def notificar():
         conn.close()
         return jsonify({'bool': False, 'message': 'Gravidade não encontrada para este item.'}), 404
     
-    # Calcula a data limite
     dias_para_resolver = resposta_info['tempo']
-    data_envio = datetime.now()
+    data_envio = datetime.now().replace(microsecond=0)
     data_limite = data_envio + timedelta(days=dias_para_resolver)
 
     try:
-        # Envia o e-mail
         msg = Message(subject=assunto,
                       sender=('QA System', app.config['MAIL_USERNAME']),
                       recipients=[destinatario],
                       body=corpo)
         mail.send(msg)
 
-        # Registra a notificação no banco de dados
         conn.execute('''
             INSERT INTO notificacao (resposta_id, destinatario_email, data_envio, data_limite, status)
             VALUES (?, ?, ?, ?, 'Pendente')
@@ -294,7 +293,6 @@ def notificar():
 @app.route('/notificacoes')
 def notificacoes():
     conn = get_db_connection()
-    # Query complexa para buscar todas as informações necessárias para os cards
     lista_notificacoes = conn.execute('''
         SELECT 
             n.id, n.destinatario_email, n.data_envio, n.data_limite, n.status,
@@ -309,8 +307,15 @@ def notificacoes():
         ORDER BY n.data_limite ASC
     ''').fetchall()
     conn.close()
+
+    notificacoes_final = []
+
+    for i in lista_notificacoes:
+        item = dict(i)
+        item['data_envio'] = datetime.strptime(item['data_envio'], '%Y-%m-%d %H:%M:%S')
+        notificacoes_final.append(item)
     
-    return render_template('notificacoes.html', notificacoes=lista_notificacoes, agora=datetime.now())
+    return render_template('notificacoes.html', notificacoes=notificacoes_final, agora=datetime.now())
 
 @app.route('/notificacoes/resolver/<int:notificacao_id>', methods=['POST'])
 def resolver_notificacao(notificacao_id):

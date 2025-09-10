@@ -30,15 +30,15 @@
                         <div class="notification-details">
                             <div><span>Destinatário:</span> {{ n.destinatario_email }}</div>
                             <div><span>Enviado em:</span> {{ n.data_envio.strftime('%d/%m/%Y %H:%M') }}</div>
-                            <div {% if n.data_limite < agora and n.status == 'Pendente' %}class="deadline-expired"{% endif %}>
-                                <span>Prazo:</span> {{ n.data_limite.strftime('%d/%m/%Y') }}
+                            <div {% if n.data_limite|to_datetime < agora and n.status == 'Pendente' %}class="deadline-expired"{% endif %}>
+                                <span>Prazo:</span> {{ (n.data_limite|to_datetime).strftime('%d/%m/%Y') }}
                             </div>
                         </div>
                     </div>
                     
                     {% if n.status == 'Pendente' %}
                     <div class="card-footer notification-actions">
-                        {% if n.data_limite < agora %}
+                        {% if n.data_limite|to_datetime < agora %}
                         <div class="alert-icon">!</div>
                         {% endif %}
                         <button class="button button-primary resolve-button">Resolver</button>
@@ -62,5 +62,5 @@
 
 {% block script %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ url_for('static', filename='script_notificacoes.js') }}"></script> 
+<script src="{{ url_for('static', filename='notificacoes.js') }}"></script> 
 {% endblock %}

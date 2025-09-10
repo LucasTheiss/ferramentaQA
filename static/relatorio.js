@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             activeRespostaId = notifyButton.dataset.respostaId;
             const reportItem = notifyButton.closest('.report-item');
             
-            // Preenche o modal com dados
             const checklistName = reportItem.dataset.checklistName;
             const question = reportItem.dataset.question;
             const severity = reportItem.dataset.severityName;
