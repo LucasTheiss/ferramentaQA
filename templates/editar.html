@@ -1,182 +1,109 @@
 {% extends "base.html" %}
 
-{% block title %}
-    Editar    
-{% endblock %}
-
-
-
-
-<!-- TODO - Carregar os dados na lista em JS para enviar ao banco de dados -->
-
-
-
-
+{% block title %}Editar Checklist{% endblock %}
 
 {% block content %}
-    <div style="display: flex; align-items: start; gap: 20px; justify-content: start;">
-        <a href="#" onclick="voltar()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4 mr-2" data-component-content="%7B%22className%22%3A%22h-4%20w-4%20mr-2%22%7D"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
-            Voltar
-        </a>
-        <h3 class="title">Edite o seu Checklist</h3>
-    </div>
-    <div class="row main-section">
-        <div class="col section">
-            <h4>Informações gerais</h4>
-
-            <div class="section-informacoes">
-                <div>
-                    <div class="label">Nome do CheckList</div>
-                    <input id="nome" type="text" class="checklist-input informacoes" placeholder="Ex: Documentação Youtube" value="{{dados['nome']}}">
-                </div>
-                <div>
-                    <div class="label">Descrição</div>
-                    <textarea id="descricao" class="checklist-input" placeholder="Descreva o objetivo dessa checklist..." value="{{dados['descricao']}}"></textarea>
-                </div>
-                <div>
-                    <div class="label">Categoria</div>
-                    <input id="categoria" type="text" class="checklist-input informacoes" placeholder="Especifique uma categoria para esse checklist" value="{{dados['categoria']}}">
-                </div>
+<div class="container">
+    <!-- CABEÇALHO DA PÁGINA DE EDIÇÃO -->
+    <header class="page-header">
+        <div class="header-left">
+            <a href="/" id="back-button" class="button button-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                Voltar
+            </a>
+            <div>
+                <h1>Editar Checklist</h1>
+                <p>Altere as perguntas e os níveis de gravidade do seu checklist.</p>
             </div>
-            <hr>
-            <h4 style="margin-bottom: 0px;">Níveis de Gravidade</h4>
-            <div class="niveis section">
-                <div class="niveis-itens">
-                    <div class="checklist-header row">
-                        <div class="col-6 checklist-item">Nível</div>
-                        <div class="col-4 checklist-item">Tempo (dias)</div>
-                        <div class="col checklist-item">Ação</div>
-                    </div>
-                    {% for nivel in niveis %}
-                        <div class="nivel-item row">
-                            <div class="col-6">
-                                <input class="checklist-input" value="{{nivel.nome}}" id="nivel-1" data-tipo="nivel">
-                            </div>
-                            <div class="col-4">
-                                <input type="number" class="checklist-input" value="{{nivel.tempo}}" id="tempo-1" min="1">
-                            </div>
-                            <div class="col">
-                                <div class="salvar" onclick="atualizarItem('nivel', this)">
-                                    <svg class="salvar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                                        <polyline points="7 3 7 8 15 8"></polyline>
-                                    </svg>
-                                </div>
-                                <button class="btn btn-link text-danger p-0" onclick="excluirItem('nivel', this)">
-                                    <svg class="excluir" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 6h18"></path>
-                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    <div class="nivel-adicionar row">
-                        <div class="col-6 checklist-item">
-                            <input id="nivel-input-save" class="checklist-input" placeholder="Ex: Crítico">
-                        </div>
-                        <div class="col-4 checklist-item">
-                            <input id="tempo-input-save" type="number" class="checklist-input" placeholder="Ex: 7" min="1">
-                        </div>
-                        <div class="col checklist-item">
-                            <svg class="salvar" onclick="salvarItem('nivel')" xmlns="http://www.w3.org/2000/svg" 
-                                width="24" 
-                                height="24" 
-                                viewBox="0 0 24 24" 
-                                fill="none" 
-                                stroke="blue" 
-                                stroke-width="2" 
-                                stroke-linecap="round" 
-                                stroke-linejoin="round">
-                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                                <polyline points="7 3 7 8 15 8"></polyline>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div id="contagem">Total de itens: <div id="numero">{{totalItens}}</div></div>
         </div>
-        <div class="col-8">
-            <div class="section">
-                <h4>Itens do Checklist</h4>
-                <form id="checklist-form" action="criar" method="POST">
-                    <div class="checklist-itens">
+        <div class="header-right">
+            <button id="save-checklist-button" class="button button-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Salvar Alterações
+            </button>
+        </div>
+    </header>
 
-                        <div id="checklist-header" class="checklist-header row">
-                            <div class="col-10 checklist-item">Pergunta</div>
-                            <div class="col checklist-item">Ação</div>
+    <!-- O ID do checklist é armazenado aqui para que o JavaScript possa encontrá-lo -->
+    <input type="hidden" id="checklist-id" value="{{ checklist.id }}">
+
+    <!-- GRID PRINCIPAL (mesma estrutura da página de criar) -->
+    <main class="main-grid">
+        <!-- COLUNA DA ESQUERDA: Informações Básicas -->
+        <div class="grid-col-1">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Informações Básicas</h2>
+                </div>
+                <div class="card-content">
+                    <!-- Campos preenchidos com os dados do checklist -->
+                    <div class="form-group">
+                        <label for="checklist-name">Nome do Checklist</label>
+                        <input type="text" id="checklist-name" class="input-field" value="{{ checklist.nome }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="checklist-description">Descrição</label>
+                        <textarea id="checklist-description" class="textarea-field" rows="3">{{ checklist.descricao }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="checklist-category">Categoria</label>
+                        <input id="checklist-category" class="input-field" value="{{ checklist.categoria }}">
+                    </div>
+                    
+                    <div class="section-divider">
+                        <h4>Níveis de Gravidade</h4>
+                        <div class="input-group">
+                            <input type="text" id="severity-name-input" class="input-field" placeholder="Nome (Ex: Crítico)">
+                            <input type="number" id="severity-time-input" class="input-field" placeholder="Dias" min="1">
+                            <button id="add-severity-button" class="button button-primary">+</button>
                         </div>
+                        <div id="severity-levels-container" class="list-container">
 
-                        {% for pergunta in perguntas %}
-                            <div class="checklist-item row">
-                                <div class="col-10 checklist-item">
-                                    <input class="checklist-input" value="{{pergunta.pergunta}}" id="{{pergunta.id}}" data-tipo="pergunta">
-                                </div>
-                                <div class="col">
-                                    <div class="salvar" onclick="atualizarItem('pergunta', this)">
-                                        <svg class="salvar" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="blue" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                            <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                                            <polyline points="7 3 7 8 15 8"></polyline>
-                                        </svg>
-                                    </div>
-                                    <button class="btn btn-link text-danger p-0" onclick="excluirItem('pergunta', this)">
-                                        <svg class="excluir" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M3 6h18"></path>
-                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                            <line x1="10" y1="11" x2="10" y2="17"></line>
-                                            <line x1="14" y1="11" x2="14" y2="17"></line>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        {% endfor %}
-
-                        <div class="checklist-adicionar row">
-                            <div class="col-10 checklist-item">
-                                <input id="checklist-input-save" class="checklist-input" placeholder="Escreva aqui a pergunta"/>
-                            </div>
-                            <div class="col checklist-item">
-                                <svg class="salvar" onclick="salvarItem('pergunta')" xmlns="http://www.w3.org/2000/svg" 
-                                    width="24" 
-                                    height="24" 
-                                    viewBox="0 0 24 24" 
-                                    fill="none" 
-                                    stroke="blue" 
-                                    stroke-width="2" 
-                                    stroke-linecap="round" 
-                                    stroke-linejoin="round">
-                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                                    <polyline points="7 3 7 8 15 8"></polyline>
-                                </svg>
-                            </div>
                         </div>
                     </div>
 
-                    <div class="envio">
-                        <button type="button" onclick="voltar()" class="btn btn-cancelar">
-                            Cancelar
-                        </button> 
-                        <button type="button" onclick="enviarFormulario()" class="btn btn-primary">
-                            Salvar o checklist
-                        </button>
+                    <div class="summary-section">
+                        <h4>Resumo</h4>
+                        <div class="summary-item">
+                            <span>Total de itens:</span>
+                            <span id="summary-total-items" class="summary-value">{{ items|length }}</span>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div> 
-    </div>
-    
+        </div>
+
+        <!-- COLUNA DA DIREITA: Itens do Checklist -->
+        <div class="grid-col-2">
+             <div class="card">
+                <div class="card-header card-header-action">
+                    <h2>Itens do Checklist</h2>
+                    <button id="add-item-button" class="button button-primary">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        Adicionar Item
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div id="items-container" class="items-list">
+
+                        <div id="empty-state" class="empty-state" style="display: none;">
+                            <p>Nenhum item adicionado ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 {% endblock %}
 
 {% block script %}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ url_for('static', filename='checklist.js') }}"></script> 
+
+<script>
+    const initialItems = {{ items|tojson }};
+    const initialLevels = {{ niveis|tojson }};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='checklist_editar.js') }}"></script> 
 {% endblock %}

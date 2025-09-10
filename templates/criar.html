@@ -52,7 +52,7 @@
                         <div class="section-divider">
                             <h4>Níveis de Gravidade</h4>
                             <div class="input-group">
-                                <input type="text" id="severity-name-input" style="width: 50%;" class="input-field" placeholder="Nome (Ex: Crítico)">
+                                <input type="text" id="severity-name-input" class="input-field" placeholder="Nome (Ex: Crítico)">
                                 <input type="number" id="severity-time-input" class="input-field" placeholder="Dias" min="1">
                                 <button id="add-severity-button" class="button button-primary">+</button>
                             </div>
@@ -97,5 +97,5 @@
 
 {% block script %}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ url_for('static', filename='checklist.js') }}"></script> 
+    <script src="{{ url_for('static', filename='checklist_criar.js') }}"></script> 
 {% endblock %}

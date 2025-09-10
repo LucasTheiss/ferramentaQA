@@ -316,6 +316,7 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    margin-bottom: 10px;
 }
 
 .card-header {
@@ -524,4 +525,8 @@ body {
 .list-item button {
     padding: 0.25rem;
     height: auto;
+}
+
+#severity-name-input{
+  width: 50%;
 }

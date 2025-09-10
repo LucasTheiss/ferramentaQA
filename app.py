@@ -26,47 +26,76 @@ def criar():
     if request.method == 'GET':
         return render_template('criar.html')
     
+    dados = request.get_json()
+
+    if not dados or 'name' not in dados or 'items' not in dados or 'severityLevels' not in dados:
+        return jsonify({'bool': False, 'message': 'Dados incompletos recebidos.'}), 400
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        sql_checklist = "INSERT INTO checklist (nome, descricao, categoria) VALUES (?, ?, ?)"
+        cursor.execute(sql_checklist, (dados['name'], dados['description'], dados['category']))
+        checklist_id = cursor.lastrowid
+
+        items_para_inserir = [(item['question'], checklist_id) for item in dados['items']]
+        if items_para_inserir:
+            sql_item = "INSERT INTO item (question, checklist_id) VALUES (?, ?)"
+            cursor.executemany(sql_item, items_para_inserir)
+
+        niveis_para_inserir = [(nivel['name'], nivel['time'], checklist_id) for nivel in dados['severityLevels']]
+        if niveis_para_inserir:
+            sql_nivel = "INSERT INTO nivel (nome, tempo, checklist_id) VALUES (?, ?, ?)"
+            cursor.executemany(sql_nivel, niveis_para_inserir)
+
+        conn.commit()
+        return jsonify({'bool': True, 'message': 'Checklist criado com sucesso!'})
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Erro no banco de dados: {e}")
+        return jsonify({'bool': False, 'message': 'Ocorreu um erro interno no servidor.'}), 500
+    finally:
+        conn.close()
+
+@app.route('/editar/<int:checklist_id>', methods=['GET', 'POST'])
+def editar(checklist_id):
+    conn = get_db_connection()
+
     if request.method == 'POST':
         dados = request.get_json()
-
+        
         if not dados or 'name' not in dados or 'items' not in dados or 'severityLevels' not in dados:
             return jsonify({'bool': False, 'message': 'Dados incompletos recebidos.'}), 400
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
         try:
-            sql_checklist = "INSERT INTO checklist (nome, descricao, categoria) VALUES (?, ?, ?)"
-            cursor.execute(sql_checklist, (dados['name'], dados['description'], dados['category']))
-            checklist_id = cursor.lastrowid
+            cursor = conn.cursor()
 
+            cursor.execute("DELETE FROM item WHERE checklist_id = ?", (checklist_id,))
+            cursor.execute("DELETE FROM nivel WHERE checklist_id = ?", (checklist_id,))
+
+            sql_update_checklist = "UPDATE checklist SET nome = ?, descricao = ?, categoria = ? WHERE id = ?"
+            cursor.execute(sql_update_checklist, (dados['name'], dados['description'], dados['category'], checklist_id))
             items_para_inserir = [(item['question'], checklist_id) for item in dados['items']]
             if items_para_inserir:
-                sql_item = "INSERT INTO item (question, checklist_id) VALUES (?, ?)"
-                cursor.executemany(sql_item, items_para_inserir)
+                cursor.executemany("INSERT INTO item (question, checklist_id) VALUES (?, ?)", items_para_inserir)
 
             niveis_para_inserir = [(nivel['name'], nivel['time'], checklist_id) for nivel in dados['severityLevels']]
             if niveis_para_inserir:
-                sql_nivel = "INSERT INTO nivel (nome, tempo, checklist_id) VALUES (?, ?, ?)"
-                cursor.executemany(sql_nivel, niveis_para_inserir)
+                cursor.executemany("INSERT INTO nivel (nome, tempo, checklist_id) VALUES (?, ?, ?)", niveis_para_inserir)
 
             conn.commit()
-            return jsonify({'bool': True, 'message': 'Checklist criado com sucesso!'})
+            return jsonify({'bool': True, 'message': 'Checklist atualizado com sucesso!'})
 
         except Exception as e:
             conn.rollback()
-            print(f"Erro no banco de dados: {e}")
+            print(f"Erro ao atualizar o banco de dados: {e}")
             return jsonify({'bool': False, 'message': 'Ocorreu um erro interno no servidor.'}), 500
         finally:
             conn.close()
 
-@app.route('/editar', methods=['GET'])
-def editar():
-    checklist_id = request.args.get('id')
-    if not checklist_id:
-        return redirect('/')
-    
-    conn = get_db_connection()
+
     checklist_data = conn.execute("SELECT * FROM checklist WHERE id = ?", (checklist_id,)).fetchone()
     
     if not checklist_data:
